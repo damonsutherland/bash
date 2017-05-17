@@ -1,0 +1,71 @@
+#!/bin/bash
+
+usage(){
+	echo "Toggles commented hostname(s) in the hosts file"
+	echo ""
+	echo "Usage: $0 <hostname> [<hostname> ...]"
+	echo "   ex: $0 composite-manager-ws business-ws"
+	exit 1
+}
+
+if [ $# -eq 0 ]; then
+	usage
+fi
+
+arr=( "$@" )
+
+sudo cp /etc/hosts /etc/hosts.bak
+# Aliases for webservice names
+declare -A map
+map["am"]="asset-manager-ws"
+map["cache"]="asset-manager-cache-service"
+map["bill"]="billing-ws"
+map["bus"]="business-ws"
+map["cm"]="composite-manager-ws"
+map["cmb"]="composite-manager-backoffice-ws"
+map["fac"]="asset-manager-facade"
+map["ptc"]="pre-trade-compliance-ws"
+map["ri"]="recon-insight-ws"
+map["set"]="am-settings-ws"
+map["stmnt"]="statements-ws"
+map["ta"]="trade-allocation-ws"
+map["tb"]="trad-blotter-ws"
+map["tes"]="trade-entry-status-ws"
+map["dash"]="dashboard-builder-ws"
+map["data"]="data-layer-components-ws"
+map["datain"]="data-layer-components-internal-ws"
+
+for item in "${arr[@]}"
+do
+	if [[ ! -z ${map[$item]} ]]; then
+        item=${map[$item]}
+    fi
+
+	str=$(grep "127.*$item" /etc/hosts)
+
+    if grep -q "$item" /etc/hosts; then
+        if [[ $str =~ ^# ]]; then
+            # 127.0.0.1 was commented out, this means the other entry is NOT commented out
+
+            # Comment out all of the matches
+            sudo sed -i "/$item/ s/^#*/#/" /etc/hosts
+            # Uncomment the localhost match
+            sudo sed -i "/^#.*127.*$item /s/^#//" /etc/hosts
+
+            echo "$item is set to localhost environment"
+        else
+            # 127.0.0.1 was NOT commented out, this means the other entry is commented out
+
+            # Uncomment all of the matches
+            sudo sed -i "/^#.*$item /s/^#//" /etc/hosts
+            # Comment out the localhost match
+            sudo sed -i "/127.*$item/ s/^#*/#/" /etc/hosts
+
+            echo "$item is set to dev environment"
+        fi
+    else
+        echo "***** $item NOT FOUND"
+    fi
+done
+
+sudo service nginx restart

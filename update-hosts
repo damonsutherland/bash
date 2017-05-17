@@ -1,0 +1,5 @@
+#!/bin/bash
+env=mac-dev #default environment
+echo "updating host file using http://hostfile/${1-$env}/${USER}" 
+sudo cp /etc/hosts /etc/hosts.bak
+sudo wget "http://hostfile/${1-$env}/${USER}" -O /etc/hosts

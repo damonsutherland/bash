@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#
+# find: Going down a max of three directories, find each directory 
+# grep: Filter out those ending with .svn
+# sed: In the retruned response, replace '/.svn' with blank. remember s/<search>/<replace>.
+# while: for each line, apply svn update to the path
+#
+depth=5
+
+find -maxdepth ${1-$depth} | grep .svn | sed 's/\/\.svn.*//' | sort -u | while read line;
+do
+  if [ -d $line ] ; then
+    svn update --username=${USER} --force-interactive $line
+  fi
+done
+

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+target=$1
+#echo "target: $target"
+urlLine=`svn info 2>&1 | grep '^URL:'`
+#echo "line: $urlLine"
+baseUrl=`echo $urlLine | sed -e 's#^.*\(http.*/\)\(branches\|trunk\|tags\).*$#\1#'`
+#echo "base: $baseUrl"
+# if the target is trunk, merge from there
+if [[ $target =~ trunk ]]; then
+    #echo "svn merge $baseUrl$target ."
+    svn merge $baseUrl$target .
+    exit
+fi
+
+# does it match a branch?
+branchesLs=`svn ls ${baseUrl}branches/`
+branchMatches=`svn ls ${baseUrl}branches/ | grep -ic "$target/$"`
+#echo $branchMatches
+if [[ $branchMatches == 1 ]]; then
+    branch=`svn ls ${baseUrl}branches | grep -i "$target/$"`
+    svn merge ${baseUrl}branches/${branch} .
+    exit
+else
+    echo "matched $branchMatches branches: $branchesLs"
+fi
+
+# does it match a tag?
+tagsLs=`svn ls ${baseUrl}tags/`
+tagMatches=`svn ls ${baseUrl}tags/ | grep -ic "$target/$"`
+#echo $tagMatches
+if [[ $tagMatches == 1 ]]; then
+    tag=`svn ls ${baseUrl}tags | grep -i "$target/$"`
+    svn merge ${baseUrl}tags/${tag} .
+    exit
+else
+    echo "matched $tagMatches tags: $tagsLs"
+fi
+
