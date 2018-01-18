@@ -8,6 +8,7 @@ alias la='ls -A'
 alias l='ls -CF'
 alias cc='cd && clear'
 alias hosts='vim /etc/hosts'
+alias ng='/opt/nodejs/lib/node_modules/@angular/cli/bin/ng'
 
 # don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
@@ -77,7 +78,7 @@ __powerline() {
     readonly FG_BASE0="\[$(tput setaf 12)\]"    ; readonly FG_BASE1="\[$(tput setaf 14)\]"
     readonly FG_BASE2="\[$(tput setaf 7)\]"     ; readonly FG_BASE3="\[$(tput setaf 15)\]"
 
-    readonly BG_BASE03="\[$(tput setab 8)\]"    ; readonly BG_BASE02="\[$(tput setab 0)\]"
+    readonly BG_BASE03="\[$(tput setab 8)\]"    ; readonly BG_BASE02="\[$(tput setab 16)\]"
     readonly BG_BASE01="\[$(tput setab 10)\]"   ; readonly BG_BASE00="\[$(tput setab 11)\]"
     readonly BG_BASE0="\[$(tput setab 12)\]"    ; readonly BG_BASE1="\[$(tput setab 14)\]"
     readonly BG_BASE2="\[$(tput setab 7)\]"     ; readonly BG_BASE3="\[$(tput setab 15)\]"
@@ -177,10 +178,10 @@ __powerline() {
 
         PS1="$BG_BLUE$FG_WHITE$BOLD \u$RESET" # user
         PS1+="$BG_BLUE$FG_WHITE@\h $RESET" # host
-        PS1+="$BG_BASE1$FG_WHITE \t $RESET" # time
-        PS1+="$BG_BASE1$FG_WHITE \w $RESET" # directory
-        PS1+="$BG_GREEN$FG_BASE2$BOLD$(__git_info)$RESET" # git section
-        PS1+="$BG_GREEN$FG_BASE2$BOLD$(__svn_info)$RESET" # svn section
+        PS1+="$BG_BASE02$FG_WHITE \t $RESET" # time
+        PS1+="$BG_BASE02$FG_WHITE \w $RESET" # directory
+        PS1+="$BG_BASE02$FG_WHITE$BOLD$(__git_info)$RESET" # git section
+        PS1+="$BG_BASE02$FG_WHITE$BOLD$(__svn_info)$RESET" # svn section
         PS1+="\n$PROMPT_EXIT$BOLD$PS_SYMBOL$RESET " # prompt/error
     }
 
