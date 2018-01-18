@@ -1,11 +1,11 @@
-port = 8000
+PORT=8000
 
-while getopts p option
-do
-  case "${option}"
-  in
-  p) port = ${OPTARG};;
+while getopts p: option; do
+  case ${option} in
+  p ) 
+    PORT=${OPTARG}
+    ;;
   esac
 done
 
-python -m SimpleHTTPServer $port
+python -m SimpleHTTPServer $PORT
