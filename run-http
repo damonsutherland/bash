@@ -1,0 +1,11 @@
+port = 8000
+
+while getopts p option
+do
+  case "${option}"
+  in
+  p) port = ${OPTARG};;
+  esac
+done
+
+python -m SimpleHTTPServer $port
